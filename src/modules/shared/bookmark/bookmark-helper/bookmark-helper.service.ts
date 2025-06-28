@@ -632,7 +632,7 @@ export class BookmarkHelperService {
         const scores = keywords.map((keyword) => {
           let count = 0;
           bookmarkWords.forEach((word) => {
-            if (word?.toLocaleLowerCase(locale).indexOf(keyword.toLocaleLowerCase(locale)) === 0) {
+            if (word?.toLocaleLowerCase(locale).indexOf(keyword.toLocaleLowerCase(locale)) >= 0) {
               count += 1;
             }
           });

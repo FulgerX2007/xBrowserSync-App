@@ -18,29 +18,62 @@ browser.runtime.onStartup.addListener(() => {
 
 // Handle messages from popup/content scripts
 browser.runtime.onMessage.addListener((message, sender) => {
-  // For now, return a simple acknowledgment
-  // In a complete implementation, this would handle sync operations,
-  // bookmark management, file downloads, etc.
-  return new Promise((resolve) => {
+  // Handle messages compatible with the original background service
+  // Return native Promise to match original service behavior
+  return new Promise((resolve, reject) => {
     try {
       switch (message.command) {
-        case 'SyncBookmarks':
-          // Would handle bookmark sync
-          resolve({ success: true, message: 'Sync initiated' });
+        case 'SYNC_BOOKMARKS':
+          // Return null for now - sync not implemented yet
+          resolve(null);
           break;
-        case 'GetCurrentSync':
-          // Would return current sync status
-          resolve({ currentSync: null });
+        case 'RESTORE_BOOKMARKS':
+          // Return null for now - restore not implemented yet
+          resolve(null);
           break;
-        case 'DisableSync':
-          // Would disable sync functionality
-          resolve({ success: true });
+        case 'GET_CURRENT_SYNC':
+          // Return null - no current sync
+          resolve(null);
           break;
-        default:
-          resolve({ error: 'Unknown command' });
+        case 'GET_SYNC_QUEUE_LENGTH':
+          // Return 0 - no queued syncs
+          resolve(0);
+          break;
+        case 'DISABLE_SYNC':
+          // Return success for disable sync
+          resolve(undefined);
+          break;
+        case 'DOWNLOAD_FILE':
+          // Download not implemented yet - return success
+          resolve(undefined);
+          break;
+        case 'ENABLE_EVENT_LISTENERS':
+          // Event listeners not implemented yet - return success
+          resolve(undefined);
+          break;
+        case 'DISABLE_EVENT_LISTENERS':
+          // Event listeners not implemented yet - return success
+          resolve(undefined);
+          break;
+        case 'ENABLE_AUTO_BACK_UP':
+          // Auto backup not implemented yet - return success
+          resolve(undefined);
+          break;
+        case 'DISABLE_AUTO_BACK_UP':
+          // Auto backup not implemented yet - return success
+          resolve(undefined);
+          break;
+        default: {
+          // For unknown commands, throw an error with proper class name
+          const error = new Error();
+          error.message = 'AmbiguousSyncRequestError';
+          reject(error);
+        }
       }
     } catch (error) {
-      resolve({ error: error.message });
+      // Ensure error message is set to a known error class name
+      error.message = 'AmbiguousSyncRequestError';
+      reject(error);
     }
   });
 });

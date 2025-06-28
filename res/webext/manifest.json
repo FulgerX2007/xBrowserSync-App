@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_App_Title_Default__",
   "description": "__MSG_App_Description_Default__",
   "icons": {
@@ -7,7 +7,7 @@
     "128": "assets/icon128.png"
   },
   "default_locale": "en",
-  "browser_action": {
+  "action": {
     "default_icon": {
       "32": "assets/notsynced.png"
     },
@@ -15,17 +15,19 @@
     "default_title": "__MSG_App_Title_Default__"
   },
   "background": {
-    "page": "background.html"
+    "service_worker": "assets/background.js"
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Space",
         "mac": "MacCtrl+Space"
       }
     }
   },
-  "content_security_policy": "connect-src *; default-src 'none'; font-src 'self' data:; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline';",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+  },
   "permissions": [
     "activeTab",
     "alarms",

@@ -42,7 +42,7 @@ export abstract class WebExtPlatformService implements PlatformService {
 
   contentScriptUrl = 'assets/webpage-metadata-collecter.js';
   optionalPermissions = {
-    origins: ['http://*/', 'https://*/']
+    origins: ['http://*/*', 'https://*/*']
   };
   refreshInterfaceTimeout: any;
 

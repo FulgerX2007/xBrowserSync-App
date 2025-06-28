@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import { AmbiguousSyncRequestError } from '../../shared/errors/errors';
 
 // Service worker compatible background script for Manifest v3
 // This replaces the Angular DOM-based bootstrap
@@ -64,16 +65,18 @@ browser.runtime.onMessage.addListener((message, sender) => {
           resolve(undefined);
           break;
         default: {
-          // For unknown commands, throw an error with proper class name
-          const error = new Error();
-          error.message = 'AmbiguousSyncRequestError';
+          // For unknown commands, create proper error instance
+          const error = new AmbiguousSyncRequestError();
+          // Set message to constructor name so platform service can rehydrate properly
+          error.message = error.constructor.name;
           reject(error);
         }
       }
     } catch (error) {
-      // Ensure error message is set to a known error class name
-      error.message = 'AmbiguousSyncRequestError';
-      reject(error);
+      // Create proper error instance and set message to constructor name for proper rehydration
+      const properError = new AmbiguousSyncRequestError();
+      properError.message = properError.constructor.name;
+      reject(properError);
     }
   });
 });

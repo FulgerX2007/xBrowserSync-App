@@ -2,9 +2,19 @@ import angular from 'angular';
 import { Component, OnInit } from 'angular-ts-decorators';
 import { boundMethod } from 'autobind-decorator';
 import { AppMainComponent } from '../../app/app-main/app-main.component';
+import { AppHelperService } from '../../app/shared/app-helper/app-helper.service';
+import { AlertService } from '../../shared/alert/alert.service';
+import { BookmarkHelperService } from '../../shared/bookmark/bookmark-helper/bookmark-helper.service';
+import { PlatformService } from '../../shared/global-shared.interface';
+import { LogService } from '../../shared/log/log.service';
+import { NetworkService } from '../../shared/network/network.service';
+import { SettingsService } from '../../shared/settings/settings.service';
+import { StoreService } from '../../shared/store/store.service';
 import { SyncType } from '../../shared/sync/sync.enum';
 import { Sync } from '../../shared/sync/sync.interface';
+import { UtilityService } from '../../shared/utility/utility.service';
 import { WorkingContext } from '../../shared/working/working.enum';
+import { WorkingService } from '../../shared/working/working.service';
 import { WebExtPlatformService } from '../shared/webext-platform/webext-platform.service';
 
 @Component({
@@ -32,6 +42,42 @@ export class WebExtAppComponent extends AppMainComponent implements OnInit {
     'UtilityService',
     'WorkingService'
   ];
+
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  constructor(
+    $location: ng.ILocationService,
+    $q: ng.IQService,
+    $scope: ng.IScope,
+    $timeout: ng.ITimeoutService,
+    AlertSvc: AlertService,
+    AppHelperSvc: AppHelperService,
+    BookmarkHelperSvc: BookmarkHelperService,
+    LogSvc: LogService,
+    NetworkSvc: NetworkService,
+    PlatformSvc: PlatformService,
+    SettingsSvc: SettingsService,
+    StoreSvc: StoreService,
+    UtilitySvc: UtilityService,
+    WorkingSvc: WorkingService
+  ) {
+    // Required for AngularJS dependency injection
+    super(
+      $location,
+      $q,
+      $scope,
+      $timeout,
+      AlertSvc,
+      AppHelperSvc,
+      BookmarkHelperSvc,
+      LogSvc,
+      NetworkSvc,
+      PlatformSvc,
+      SettingsSvc,
+      StoreSvc,
+      UtilitySvc,
+      WorkingSvc
+    );
+  }
 
   copyTextToClipboard(text: string): ng.IPromise<void> {
     return navigator.clipboard.writeText(text);

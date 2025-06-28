@@ -404,7 +404,13 @@ export class WebExtBackgroundService {
       action.then(resolve).catch(reject);
     }).catch((err) => {
       // Set message to error class name so sender can rehydrate the error on receipt
-      err.message = err.constructor.name;
+      // Only set constructor name if it's a valid string to prevent undefined errors
+      if (err && err.constructor && err.constructor.name && typeof err.constructor.name === 'string') {
+        err.message = err.constructor.name;
+      } else {
+        // Fallback to generic error message if constructor name is not available
+        err.message = 'BaseError';
+      }
       throw err;
     });
   }

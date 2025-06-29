@@ -1,111 +1,72 @@
-import browser from 'webextension-polyfill';
-import { AmbiguousSyncRequestError } from '../../shared/errors/errors';
-
 // Service worker compatible background script for Manifest v3
-// This replaces the Angular DOM-based bootstrap
+// We'll use a simpler approach without Angular for now
+import browser from 'webextension-polyfill';
 
-// Set up essential event handlers
+// Type for messages
+interface Message {
+  command: string;
+  [key: string]: any;
+}
+
+// Simple message handler for basic functionality
+browser.runtime.onMessage.addListener((message: Message) => {
+  // Basic message handling without Angular
+  switch (message.command) {
+    case 'SYNC_BOOKMARKS':
+      return Promise.resolve({ success: true, message: 'Sync not yet implemented' });
+    case 'RESTORE_BOOKMARKS':
+      return Promise.resolve({ success: true, message: 'Restore not yet implemented' });
+    case 'GET_CURRENT_SYNC':
+      return Promise.resolve(null);
+    case 'GET_SYNC_QUEUE_LENGTH':
+      return Promise.resolve(0);
+    case 'DISABLE_SYNC':
+    case 'DOWNLOAD_FILE':
+    case 'ENABLE_EVENT_LISTENERS':
+    case 'DISABLE_EVENT_LISTENERS':
+    case 'ENABLE_AUTO_BACK_UP':
+    case 'DISABLE_AUTO_BACK_UP':
+      return Promise.resolve({ success: true });
+    default:
+      return Promise.reject(new Error('Unknown command'));
+  }
+});
+
+// Handle install events
 browser.runtime.onInstalled.addListener((details) => {
+  // Basic initialization can happen here
   if (details.reason === 'install') {
-    // Handle fresh install - could initialize default settings
+    // Handle fresh install
   } else if (details.reason === 'update') {
     // Handle extension update
   }
 });
 
+// Handle startup events
 browser.runtime.onStartup.addListener(() => {
-  // Browser startup detected
+  // Handle browser startup
 });
 
-// Handle messages from popup/content scripts
-browser.runtime.onMessage.addListener((message, sender) => {
-  // Handle messages compatible with the original background service
-  // Return native Promise to match original service behavior
-  return new Promise((resolve, reject) => {
-    try {
-      switch (message.command) {
-        case 'SYNC_BOOKMARKS':
-          // Return null for now - sync not implemented yet
-          resolve(null);
-          break;
-        case 'RESTORE_BOOKMARKS':
-          // Return null for now - restore not implemented yet
-          resolve(null);
-          break;
-        case 'GET_CURRENT_SYNC':
-          // Return null - no current sync
-          resolve(null);
-          break;
-        case 'GET_SYNC_QUEUE_LENGTH':
-          // Return 0 - no queued syncs
-          resolve(0);
-          break;
-        case 'DISABLE_SYNC':
-          // Return success for disable sync
-          resolve(undefined);
-          break;
-        case 'DOWNLOAD_FILE':
-          // Download not implemented yet - return success
-          resolve(undefined);
-          break;
-        case 'ENABLE_EVENT_LISTENERS':
-          // Event listeners not implemented yet - return success
-          resolve(undefined);
-          break;
-        case 'DISABLE_EVENT_LISTENERS':
-          // Event listeners not implemented yet - return success
-          resolve(undefined);
-          break;
-        case 'ENABLE_AUTO_BACK_UP':
-          // Auto backup not implemented yet - return success
-          resolve(undefined);
-          break;
-        case 'DISABLE_AUTO_BACK_UP':
-          // Auto backup not implemented yet - return success
-          resolve(undefined);
-          break;
-        default: {
-          // For unknown commands, create proper error instance
-          const error = new AmbiguousSyncRequestError();
-          // Set message to constructor name so platform service can rehydrate properly
-          error.message = error.constructor.name;
-          reject(error);
-        }
-      }
-    } catch (error) {
-      // Create proper error instance and set message to constructor name for proper rehydration
-      const properError = new AmbiguousSyncRequestError();
-      properError.message = properError.constructor.name;
-      reject(properError);
-    }
-  });
-});
-
-// Handle alarms for periodic tasks
+// Handle alarms
 browser.alarms.onAlarm.addListener((alarm) => {
+  // Handle alarms for periodic tasks
   switch (alarm.name) {
     case 'AutoBackUp':
-      // Would handle auto backup
+      // Handle auto backup
       break;
     case 'SyncUpdatesCheck':
-      // Would check for sync updates
+      // Handle sync updates check
       break;
     default:
     // Unknown alarm
   }
 });
 
-// Handle notification events
+// Handle notifications
 browser.notifications.onClicked.addListener((notificationId) => {
-  // Could open relevant pages or perform actions
+  // Handle notification click
 });
 
 browser.notifications.onClosed.addListener((notificationId, byUser) => {
   // Handle notification closed
 });
-
-// Keep service worker alive by handling periodic events
-setInterval(() => {
-  // This helps prevent the service worker from being terminated too quickly
-  // In a real implementation, this would check for pending operations
-}, 25000);

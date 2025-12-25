@@ -640,11 +640,11 @@ export class BookmarkHelperService {
           return count;
         });
 
-        // Check all keywords match
-        if (angular.isUndefined(scores.find((x) => x === 0))) {
-          // Calculate score
-          const score = scores.reduce((memo, num) => memo + num, 0);
+        // Calculate score (sum of all keyword matches)
+        const score = scores.reduce((memo, num) => memo + num, 0);
 
+        // Check at least one keyword matches (OR logic)
+        if (score > 0) {
           // Add result
           const result: BookmarkSearchResult = angular.copy(bookmark);
           result.score = score;
